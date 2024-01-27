@@ -6,6 +6,7 @@ const player1Score = document.querySelector('.player1score')
 const player2Score = document.querySelector('.player2score')
 const restartButton = document.querySelector('.restart')
 
+
 const Gameboard = (()=>{
 
 let gameboard = ["","","","","","","","",""]
@@ -53,13 +54,16 @@ const Game = (()=>{
     let players = []
     let currentPlayer; 
     let gameOver;
+    let playerOneScore = 0
+    let playerTwoScore = 0
 
     const start = ()=>{
         
         if(player1.value === ''||player2.value === ''){       
             return alert('please enter Name')
         }else{
-        player1Score.innerHTML = player1.value  
+        player1Score.innerHTML = player1.value 
+        
         player2Score.innerHTML = player2.value 
         players = [createPlayer(player1.value,"X"),createPlayer(player2.value,"0")]
         currentPlayer = 0
@@ -76,23 +80,38 @@ const Game = (()=>{
         Gameboard.update(index,players[currentPlayer].mark)
         if(CheckForWin(Gameboard.getGameBoard())){
             gameOver = true;
-            alert(`${players[currentPlayer].name} has Won The Game `)
+            let winnerBanner = document.createElement('div')
+            document.querySelector('.wrapper').appendChild(winnerBanner)
+            winnerBanner.innerHTML = `${players[currentPlayer].name} has Won The Game `
+            winnerBanner.classList.add('winnerBanner')
+            setTimeout(function() {
+                winnerBanner.classList.add('fadeIn')
+              }, 1000);
+            if(currentPlayer===0){
+                playerOneScore+=1
+                player1Score.innerHTML = `${players[currentPlayer].name} : ${playerOneScore} `
+            }
+            else if(currentPlayer===1){
+                playerTwoScore+=1
+                player2Score.innerHTML = `${players[currentPlayer].name} : ${playerTwoScore} `
+            }
+            
         }
         currentPlayer = currentPlayer === 0 ? 1 : 0;
     }
 
     const restart = ()=>{
-        players = []
-        player1.value = ''
-        player2.value = ''
-        player1Score.innerHTML = ''
-        player2Score.innerHTML = ''
+        let winnerBanner = document.querySelector('.winnerBanner')
+        if(winnerBanner){
+        winnerBanner.classList.remove('fadeIn')
+        setTimeout(function() {
+            document.querySelector('.wrapper').removeChild(winnerBanner)
+          }, 500);
+        }
         for(let i =0;i<9;i++){
             Gameboard.getGameBoard()[i] = ''
         }
         Gameboard.render()
-        
-
     }
 
     const CheckForWin = (board)=>{ 
@@ -107,7 +126,6 @@ const Game = (()=>{
             [0,4,8],
             [2,4,6]
         ]
-
         for(let i =0;i<winningCombinations.length;i++){
             const [a,b,c] = winningCombinations[i]
             if(board[a] && board[a]===board[b]&&board[a]===board[c]){

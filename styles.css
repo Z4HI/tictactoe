@@ -25,6 +25,7 @@ header{
     margin-right: auto;
     display: flex;
     justify-content: space-around;
+    margin-bottom: 10px;
 }
 
 .player1score, .player2score{
@@ -36,7 +37,6 @@ header{
     
 }
 
-
 .gameContainer{
 
     background-color: blue;
@@ -47,11 +47,11 @@ header{
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
     grid-template-rows: 1fr 1fr 1fr;
-    
+    gap: 10px;
 }
 .square{
     background-color: white;
-    border: solid 4px black;
+    
     display: flex;
     justify-content: center;
     align-items: center;
@@ -68,9 +68,31 @@ header{
     display: flex;
     justify-content: space-around;
     align-items: center;
+    margin-top: 10px;
 }
 
 .gameSettings :nth-child(n){
     width: 90px;
     height: 30px;
+}
+
+.winnerBanner{
+    background-color: green;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%) scale(0);
+    z-index: 10;
+    height: 100px;
+    width: 300px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: 1s ease ;
+}
+
+.fadeIn{
+    
+    color: white;
+    transform:translate(-50%,-50%) scale(1);
 }
