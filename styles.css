@@ -1,31 +1,66 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Single+Day&display=swap');
 *{
     box-sizing: border-box;
     margin: 0;
+    font-family: 'Single Day', cursive;
 }
 
 body{
-    background-image:;
-    background-size: cover;
-    background-repeat: no-repeat;
-    background-position: center;
+    
     height: 100dvh;
     width: 100dvw;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    background-color: black;
+}
+
+.wrapper{
+    border: solid white 5px;
+    padding: 10px;
+    border-radius: 20px;
+}
+
+.title{
+    color: white;
+    padding: 10px;
+    display: flex;
+    width: 100%;
+}
+small{
+    font-size: 8px;
+    background-color: red;
+    height: fit-content;
+    padding: 2px;
+    margin-left: 5px;
+    border-radius: 10px;
+    width: 75%;
+}
+
+.goesFirst{
+    background:linear-gradient(to left,blue,red);
+    display: flex;
+    justify-content: center;
+    text-align: center;
+    height: 40px;
+    font-size: 30px;
+    color: white;
 }
 
 header{
-    background-color: red;
+    
+    background:linear-gradient(to left,blue,red);
     width: 400px;
     margin-left: 10%;
-    height: 100px;
+    height: 60px;
     margin-left: auto;
     margin-right: auto;
     display: flex;
     justify-content: space-around;
     margin-bottom: 10px;
+    color: white;
 }
 
 .player1score, .player2score{
@@ -39,27 +74,30 @@ header{
 
 .gameContainer{
 
-    background-color: blue;
-    width: 400px;
+    width: 300px;
     margin-left: auto;
     margin-right: auto;
-    height: 400px;
+    height: 300px;
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
     grid-template-rows: 1fr 1fr 1fr;
     gap: 10px;
+    background:linear-gradient(to left,blue,red);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
 }
 .square{
-    background-color: white;
-    
+    background-color: rgba(255, 255, 255, 0.092);
     display: flex;
+    font-size: 60px;
     justify-content: center;
     align-items: center;
     overflow: hidden;
+    
 }
 
 .gameSettings{
-    background-color: green;
+    background:linear-gradient(to left,blue,red);
     width: 400px;
     margin-left: 10%;
     height: 50px;
@@ -69,6 +107,13 @@ header{
     justify-content: space-around;
     align-items: center;
     margin-top: 10px;
+    border-radius: 20px;
+}
+
+button, input{
+    border-radius: 10px;
+    border: none;
+    text-align: center;
 }
 
 .gameSettings :nth-child(n){
@@ -77,18 +122,22 @@ header{
 }
 
 .winnerBanner{
-    background-color: green;
+    background:linear-gradient(to left,blue,red);
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%,-50%) scale(0);
     z-index: 10;
     height: 100px;
-    width: 300px;
+    width: 400px;
     display: flex;
     justify-content: center;
     align-items: center;
-    transition: 1s ease ;
+    transition: 0.5s ease ;
+    opacity: 90%;
+    border-radius: 20px;
+    font-size: 40px;
+    text-align: center;
 }
 
 .fadeIn{
