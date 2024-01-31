@@ -32,6 +32,7 @@ function render(){
 const update = (index,value)=>{
     
     gameboard[index] = value
+    
     render()
 }
 const getGameBoard = ()=> {
@@ -73,7 +74,8 @@ const Game = (()=>{
             players = []
             playerOneScore = 0
             playerTwoScore = 0
-            cpu = false
+            cpu = false;
+            cpuH = false;
         }   
         
         for(let i =0;i<9;i++){
@@ -84,8 +86,15 @@ const Game = (()=>{
             return alert('please enter Name')
         }else{
         players = [createPlayer(player1.value.toUpperCase(),"X"),createPlayer(player2.value.toUpperCase(),"0")]
-        player1Score.innerHTML = players[0].name
-        player2Score.innerHTML = players[1].name
+        
+        player1Score.innerHTML = '<i class="fa-solid fa-user"></i>&nbsp;' + players[0].name
+        player2Score.innerHTML = '<i class="fa-solid fa-user"></i>&nbsp;' + players[1].name
+        if(cpu){
+            player2Score.innerHTML= '<i class="fa-solid fa-robot"></i>'
+        }
+        if(cpuH){
+            player2Score.innerHTML= '<i class="fa-solid fa-robot fa-bounce " style="color: #efe7e6;"></i>'
+        }
         currentPlayer = 0
         goesFirst.innerHTML = players[currentPlayer].name + ' goes First'
         gameOver = false
@@ -116,11 +125,11 @@ const Game = (()=>{
             displayWinner(players[currentPlayer].name)
             if(currentPlayer===0){
                 playerOneScore+=1
-                player1Score.innerHTML = `${players[currentPlayer].name} : ${playerOneScore} `
+                player1Score.innerHTML = `${'<i class="fa-solid fa-user"></i>&nbsp;' + players[currentPlayer].name} : ${playerOneScore} `
             }
             else if(currentPlayer===1){
                 playerTwoScore+=1
-                player2Score.innerHTML = `${players[currentPlayer].name} : ${playerTwoScore} `
+                player2Score.innerHTML = `${'<i class="fa-solid fa-user"></i>&nbsp;' + players[currentPlayer].name} : ${playerTwoScore} `
             }
         }
         else if(checkForTie(Gameboard.getGameBoard())){
@@ -138,7 +147,9 @@ const Game = (()=>{
             
         }
         else if(cpuH){
-            cpuHardMove()
+            setTimeout(function() {
+                cpuHardMove()
+              }, 300);
         }
            
     }
@@ -163,7 +174,7 @@ const Game = (()=>{
     }
 
     const CheckForWin = (board)=>{ 
-
+        
         const winningCombinations = [
             [0,1,2],
             [3,4,5],
@@ -175,8 +186,22 @@ const Game = (()=>{
             [2,4,6]
         ]
         for(let i =0;i<winningCombinations.length;i++){
+            
             const [a,b,c] = winningCombinations[i]
             if(board[a] && board[a]===board[b]&&board[a]===board[c]){
+                square = document.getElementById(`${a}`)
+                square2 = document.getElementById(`${b}`)
+                square3 = document.getElementById(`${c}`)
+
+                setTimeout(function() {
+                    square.style.backgroundColor = 'rgba(255, 15, 187, 0.428)'
+                    square.style.textShadow = '0 0 5px #FFF, 0 0 1px #FFF'
+                    square2.style.backgroundColor = 'rgba(255, 15, 187, 0.428)'
+                    square2.style.textShadow = '0 0 5px #FFF, 0 0 1px #FFF'
+                    square3.style.backgroundColor = 'rgba(255, 15, 187, 0.428)'
+                    square3.style.textShadow = '0 0 5px #FFF, 0 0 1px #FFF'
+                  }, 100);
+                
                 return true;
             }
         }
@@ -198,17 +223,27 @@ const Game = (()=>{
             return false;
     }
 
-    const cpuPlayer = ()=>{
-        cpu = true;
-        player2.value = "AI"
+    const cpuPlayer = (value)=>{
+        if(value === '2'){
+            cpu = true;
+            cpuH = false;
+            player2.value = "EASY AI"
+            Game.start()
+        }
+        else if(value === '3'){
+            cpuH = true;
+            cpu = false;
+        player2.value = "HARD AI"
         Game.start()
+        }
+        
+        
     }
 
     const cpuMove = ()=>{
         if(gameOver === false){
             for(let i =0;i<Infinity;i++){
                 let randomNumb = Math.floor(Math.random()*9)
-                console.log(randomNumb)
                 if(Gameboard.getGameBoard()[randomNumb] === ''){
                     Gameboard.update(randomNumb, players[currentPlayer].mark)
                     break;
@@ -218,11 +253,11 @@ const Game = (()=>{
                 displayWinner(players[currentPlayer].name)
                 if(currentPlayer===0){
                     playerOneScore+=1
-                    player1Score.innerHTML = `${players[currentPlayer].name} : ${playerOneScore} `
+                    player1Score.innerHTML = `${ players[currentPlayer].name} : ${playerOneScore} `
                 }
                 else if(currentPlayer===1){
                     playerTwoScore+=1
-                    player2Score.innerHTML = `${players[currentPlayer].name} : ${playerTwoScore} `
+                    player2Score.innerHTML = `${'<i class="fa-solid fa-robot"></i>&nbsp;' +players[currentPlayer].name} : ${playerTwoScore} `
                 }
                 gameOver = true;
             }
@@ -245,7 +280,7 @@ const Game = (()=>{
                 }
                 else if(currentPlayer===1){
                     playerTwoScore+=1
-                    player2Score.innerHTML = `${players[currentPlayer].name} : ${playerTwoScore} `
+                    player2Score.innerHTML = `${`<i class="fa-solid fa-robot fa-bounce " style="color: #efe7e6;"></i>&nbsp;` + players[currentPlayer].name} : ${playerTwoScore} `
                 }
                 gameOver = true;
             }
@@ -264,7 +299,7 @@ const Game = (()=>{
             winnerBanner.classList.add('winnerBanner')
             setTimeout(function() {
                 winnerBanner.classList.add('fadeIn')
-              }, 300);
+              }, 600);
     }
 
     return {
@@ -290,14 +325,14 @@ playAgainButton.addEventListener('click',()=>{
 
 cpuBtn.addEventListener('click', ()=>{
 
-    Game.cpuPlayer()
+    Game.cpuPlayer('2')
     
 })
 
 cpuHardBtn.addEventListener('click', ()=>{
 
-    Game.cpuPlayer()
-    cpuH = true
+    Game.cpuPlayer('3')
+    
     
 })
 
