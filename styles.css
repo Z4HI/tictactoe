@@ -21,6 +21,7 @@ body{
     border: solid white 5px;
     padding: 10px;
     border-radius: 20px;
+    width: 500px;
 }
 
 .title{
@@ -47,12 +48,12 @@ small{
     height: 40px;
     font-size: 30px;
     color: white;
+    
 }
 
 header{
     
     background:linear-gradient(to left,blue,red);
-    width: 400px;
     margin-left: 10%;
     height: 60px;
     margin-left: auto;
@@ -98,7 +99,6 @@ header{
 
 .gameSettings{
     background:linear-gradient(to left,blue,red);
-    width: 400px;
     margin-left: 10%;
     height: 50px;
     margin-left: auto;

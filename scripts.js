@@ -4,8 +4,9 @@ const player2 = document.querySelector('#player2')
 const startButton = document.querySelector('.start')
 const player1Score = document.querySelector('.player1score')
 const player2Score = document.querySelector('.player2score')
-const restartButton = document.querySelector('.restart')
+const playAgainButton = document.querySelector('.restart')
 const goesFirst = document.querySelector('.goesFirst')
+const cpuBtn = document.querySelector('.cpu')
 
 const Gameboard = (()=>{
 
@@ -56,19 +57,27 @@ const Game = (()=>{
     let gameOver;
     let playerOneScore = 0
     let playerTwoScore = 0
+    let cpu;
 
     const start = ()=>{
+        
         let winnerBanner = document.querySelector('.winnerBanner')
         if(winnerBanner){
+        winnerBanner.classList.remove('fadeIn')
+        setTimeout(function() {
+            document.querySelector('.wrapper').removeChild(winnerBanner)
+          }, 200);
+                
+            players = []
             playerOneScore = 0
             playerTwoScore = 0
-            player1Score.innerHTML = `${players[0].name} : ${playerOneScore} `
-            player2Score.innerHTML = `${players[0].name} : ${playerTwoScore} `
-            restart()
-
+            cpu = false
+            for(let i =0;i<9;i++){
+                Gameboard.getGameBoard()[i] = ''
             }
+        }            
         
-        else if(player1.value === ''||player2.value === ''){       
+        if(player1.value === ''||player2.value === ''){       
             return alert('please enter Name')
         }else{
         players = [createPlayer(player1.value.toUpperCase(),"X"),createPlayer(player2.value.toUpperCase(),"0")]
@@ -82,20 +91,26 @@ const Game = (()=>{
     }
 
     const handleClick = (event)=>{
+
+        let index;
         if(gameOver){
             return;
         }
+        
+            index = parseInt(event.target.id)
+            gameOver = false;
 
-        let index = parseInt(event.target.id)
         if(Gameboard.getGameBoard()[index] !== ''){
-        gameOver = false;
-        return;
-        }
-        Gameboard.update(index,players[currentPlayer].mark)
+            gameOver = false;
+            return;
+            }
+        
+        Gameboard.update(index,players[currentPlayer].mark) 
+
+        ///-----------------------------------------------------//
         if(CheckForWin(Gameboard.getGameBoard())){
             gameOver = true;
             displayWinner(players[currentPlayer].name)
-            
             if(currentPlayer===0){
                 playerOneScore+=1
                 player1Score.innerHTML = `${players[currentPlayer].name} : ${playerOneScore} `
@@ -104,7 +119,6 @@ const Game = (()=>{
                 playerTwoScore+=1
                 player2Score.innerHTML = `${players[currentPlayer].name} : ${playerTwoScore} `
             }
-            
         }
         else if(checkForTie(Gameboard.getGameBoard())){
             gameOver = true;
@@ -113,17 +127,56 @@ const Game = (()=>{
         gameOver = false
         currentPlayer = currentPlayer === 0 ? 1 : 0;
 
+            ///////////////////////////////////////////
+        if(cpu && currentPlayer === 1 && gameOver === false){
+            
+            gameOver = false;
+            for(let i =0;i<9;i++){
+                let randomNumb = Math.floor(Math.random()*9)
+                console.log(randomNumb)
+                if(Gameboard.getGameBoard()[randomNumb]=== ''){
+                    Gameboard.update(randomNumb, '0')
+                    break
+                }
+
+            }
+            
+            if(CheckForWin(Gameboard.getGameBoard())){
+                
+                displayWinner(players[currentPlayer].name)
+                if(currentPlayer===0){
+                    playerOneScore+=1
+                    player1Score.innerHTML = `${players[currentPlayer].name} : ${playerOneScore} `
+                }
+                else if(currentPlayer===1){
+                    playerTwoScore+=1
+                    player2Score.innerHTML = `${players[currentPlayer].name} : ${playerTwoScore} `
+                }
+                gameOver = true;
+            }
+            else if(checkForTie(Gameboard.getGameBoard())){
+                gameOver = true;
+                
+            }else
+            gameOver = false
+            currentPlayer = currentPlayer === 0 ? 1 : 0;
+                
+        }
+           
     }
 
-    const restart = ()=>{
+    const playAgain = ()=>{
         gameOver = false
+        if(cpu){
+            currentPlayer = 0
+        }
         goesFirst.innerHTML = players[currentPlayer].name + ' goes First'
         let winnerBanner = document.querySelector('.winnerBanner')
         if(winnerBanner){
         winnerBanner.classList.remove('fadeIn')
         setTimeout(function() {
             document.querySelector('.wrapper').removeChild(winnerBanner)
-          }, 500);
+          }, 200);
         }
         for(let i =0;i<9;i++){
             Gameboard.getGameBoard()[i] = ''
@@ -162,9 +215,18 @@ const Game = (()=>{
             setTimeout(function() {
                 winnerBanner.classList.add('fadeIn')
               }, 500);
+              return true;
             }
-
+            return false;
     }
+
+    const cpuPlayer = ()=>{
+        cpu = true;
+        player2.value = "AI"
+        Game.start()
+    }
+
+    
 
     const displayWinner = (winnerName)=>{
         let winnerBanner = document.createElement('div')
@@ -177,19 +239,27 @@ const Game = (()=>{
     }
 
     return {
-        start,handleClick,restart
+        start,handleClick,playAgain,cpuPlayer
         
     }
 })();
 
-startButton.addEventListener('click',() =>{
 
+startButton.addEventListener('click',() =>{
     Game.start()
     
 })
 
-restartButton.addEventListener('click',()=>{
-    Game.restart()
+playAgainButton.addEventListener('click',()=>{
+    Game.playAgain()
 
 })
 
+cpuBtn.addEventListener('click', ()=>{
+
+    Game.cpuPlayer()
+    
+})
+
+
+ 
