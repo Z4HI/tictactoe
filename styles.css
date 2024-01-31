@@ -22,6 +22,7 @@ body{
     padding: 10px;
     border-radius: 20px;
     width: 500px;
+    transition: all .2s ease;
 }
 
 .title{
@@ -99,26 +100,44 @@ header{
 
 .gameSettings{
     background:linear-gradient(to left,blue,red);
-    margin-left: 10%;
-    height: 50px;
+    margin-left: auto;
+    margin-right: auto;
+    display: grid;
+    margin-top: 10px;
+    border-radius: 20px;
+    grid-template-rows:40px 40px;
+    grid-template-columns:1fr;
+    width: 100%;
+    
+}
+
+.top{
+    display: flex;
+    justify-content: space-between;
+    padding: 4px;
+}
+.bottom{
     margin-left: auto;
     margin-right: auto;
     display: flex;
-    justify-content: space-around;
-    align-items: center;
-    margin-top: 10px;
-    border-radius: 20px;
+    justify-content: space-evenly;
+    padding: 4px;
 }
+
 
 button, input{
     border-radius: 10px;
     border: none;
     text-align: center;
+    width: 100px;
+    
 }
 
-.gameSettings :nth-child(n){
-    width: 90px;
-    height: 30px;
+button:hover{
+    background-color: red;
+    color: white;
+    transition: all .2s ease;
+    cursor: pointer;
 }
 
 .winnerBanner{
@@ -144,4 +163,22 @@ button, input{
     
     color: white;
     transform:translate(-50%,-50%) scale(1);
+}
+
+@media screen and (max-width:560px ) {
+
+    .wrapper{
+        width:410px ;
+    }
+
+    .winnerBanner{
+        width: 350px;
+    }
+
+    button, input{
+        width: 84px;
+        text-align: center;
+        font-size: 12px;
+    }
+    
 }

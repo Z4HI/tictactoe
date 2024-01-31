@@ -72,10 +72,11 @@ const Game = (()=>{
             playerOneScore = 0
             playerTwoScore = 0
             cpu = false
-            for(let i =0;i<9;i++){
-                Gameboard.getGameBoard()[i] = ''
-            }
-        }            
+        }   
+        
+        for(let i =0;i<9;i++){
+            Gameboard.getGameBoard()[i] = ''
+        }
         
         if(player1.value === ''||player2.value === ''){       
             return alert('please enter Name')
