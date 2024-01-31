@@ -136,7 +136,9 @@ const Game = (()=>{
                 let randomNumb = Math.floor(Math.random()*9)
                 console.log(randomNumb)
                 if(Gameboard.getGameBoard()[randomNumb]=== ''){
-                    Gameboard.update(randomNumb, '0')
+                    setTimeout(function() {
+                        Gameboard.update(randomNumb, '0')
+                      }, 300);
                     break
                 }
 
