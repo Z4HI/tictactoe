@@ -7,7 +7,9 @@ const player2Score = document.querySelector('.player2score')
 const playAgainButton = document.querySelector('.restart')
 const goesFirst = document.querySelector('.goesFirst')
 const cpuBtn = document.querySelector('.cpu')
+const cpuHardBtn = document.querySelector('.cpuHard')
 let cpu;
+let cpuH;
 const Gameboard = (()=>{
 
 let gameboard = ["","","","","","","","",""]
@@ -28,7 +30,7 @@ function render(){
 }
 
 const update = (index,value)=>{
-
+    
     gameboard[index] = value
     render()
 }
@@ -129,41 +131,14 @@ const Game = (()=>{
         currentPlayer = currentPlayer === 0 ? 1 : 0;
 
             ///////////////////////////////////////////
-        if(cpu && currentPlayer === 1 && gameOver === false){
+        if(cpu){
+            setTimeout(function() {
+                cpuMove()
+              }, 300);
             
-            gameOver = false;
-            for(let i =0;i<9;i++){
-                let randomNumb = Math.floor(Math.random()*9)
-                console.log(randomNumb)
-                if(Gameboard.getGameBoard()[randomNumb]=== ''){
-                    setTimeout(function() {
-                        Gameboard.update(randomNumb, '0')
-                      }, 300);
-                    break
-                }
-
-            }
-            
-            if(CheckForWin(Gameboard.getGameBoard())){
-                
-                displayWinner(players[currentPlayer].name)
-                if(currentPlayer===0){
-                    playerOneScore+=1
-                    player1Score.innerHTML = `${players[currentPlayer].name} : ${playerOneScore} `
-                }
-                else if(currentPlayer===1){
-                    playerTwoScore+=1
-                    player2Score.innerHTML = `${players[currentPlayer].name} : ${playerTwoScore} `
-                }
-                gameOver = true;
-            }
-            else if(checkForTie(Gameboard.getGameBoard())){
-                gameOver = true;
-                
-            }else
-            gameOver = false
-            currentPlayer = currentPlayer === 0 ? 1 : 0;
-                
+        }
+        else if(cpuH){
+            cpuHardMove()
         }
            
     }
@@ -229,7 +204,58 @@ const Game = (()=>{
         Game.start()
     }
 
+    const cpuMove = ()=>{
+        if(gameOver === false){
+            for(let i =0;i<Infinity;i++){
+                let randomNumb = Math.floor(Math.random()*9)
+                console.log(randomNumb)
+                if(Gameboard.getGameBoard()[randomNumb] === ''){
+                    Gameboard.update(randomNumb, players[currentPlayer].mark)
+                    break;
+                }
+            }
+            if(CheckForWin(Gameboard.getGameBoard())){
+                displayWinner(players[currentPlayer].name)
+                if(currentPlayer===0){
+                    playerOneScore+=1
+                    player1Score.innerHTML = `${players[currentPlayer].name} : ${playerOneScore} `
+                }
+                else if(currentPlayer===1){
+                    playerTwoScore+=1
+                    player2Score.innerHTML = `${players[currentPlayer].name} : ${playerTwoScore} `
+                }
+                gameOver = true;
+            }
+            else if(checkForTie(Gameboard.getGameBoard())){
+                gameOver = true;
+            }else
+            gameOver = false
+            currentPlayer = currentPlayer === 0 ? 1 : 0;    
+        }
+    }   
     
+    const cpuHardMove = ()=>{
+        if(gameOver === false){
+        ////minimax
+            if(CheckForWin(Gameboard.getGameBoard())){
+                displayWinner(players[currentPlayer].name)
+                if(currentPlayer===0){
+                    playerOneScore+=1
+                    player1Score.innerHTML = `${players[currentPlayer].name} : ${playerOneScore} `
+                }
+                else if(currentPlayer===1){
+                    playerTwoScore+=1
+                    player2Score.innerHTML = `${players[currentPlayer].name} : ${playerTwoScore} `
+                }
+                gameOver = true;
+            }
+            else if(checkForTie(Gameboard.getGameBoard())){
+                gameOver = true;
+            }else
+            gameOver = false
+            currentPlayer = currentPlayer === 0 ? 1 : 0;    
+        }
+    } 
 
     const displayWinner = (winnerName)=>{
         let winnerBanner = document.createElement('div')
@@ -251,6 +277,7 @@ const Game = (()=>{
 startButton.addEventListener('click',() =>{
     if(cpu){
         player2.value = ''
+        cpu = false
     }
     Game.start()
     
@@ -267,5 +294,14 @@ cpuBtn.addEventListener('click', ()=>{
     
 })
 
+cpuHardBtn.addEventListener('click', ()=>{
+
+    Game.cpuPlayer()
+    cpuH = true
+    
+})
+
+
+ 
 
  
