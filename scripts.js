@@ -7,7 +7,7 @@ const player2Score = document.querySelector('.player2score')
 const playAgainButton = document.querySelector('.restart')
 const goesFirst = document.querySelector('.goesFirst')
 const cpuBtn = document.querySelector('.cpu')
-
+let cpu;
 const Gameboard = (()=>{
 
 let gameboard = ["","","","","","","","",""]
@@ -57,7 +57,7 @@ const Game = (()=>{
     let gameOver;
     let playerOneScore = 0
     let playerTwoScore = 0
-    let cpu;
+    
 
     const start = ()=>{
         
@@ -247,6 +247,9 @@ const Game = (()=>{
 
 
 startButton.addEventListener('click',() =>{
+    if(cpu){
+        player2.value = ''
+    }
     Game.start()
     
 })

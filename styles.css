@@ -114,7 +114,7 @@ header{
 .top{
     display: flex;
     justify-content: space-between;
-    padding: 4px;
+    margin: 5px;
 }
 .bottom{
     margin-left: auto;
@@ -168,7 +168,7 @@ button:hover{
 @media screen and (max-width:560px ) {
 
     .wrapper{
-        width:410px ;
+        width:365px ;
     }
 
     .winnerBanner{
@@ -176,9 +176,12 @@ button:hover{
     }
 
     button, input{
-        width: 84px;
+        width: 70px;
+        height: 30px;
         text-align: center;
-        font-size: 12px;
+        font-size: 10px;
     }
+
+
     
 }
