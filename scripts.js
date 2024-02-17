@@ -92,8 +92,8 @@ const Game = (()=>{
         if(cpu){
             player2Score.innerHTML= '<i class="fa-solid fa-robot"></i>'
         }
-        if(cpuH){
-            player2Score.innerHTML= '<i class="fa-solid fa-robot fa-bounce " style="color: #efe7e6;"></i>'
+        else if(cpuH){
+            player2Score.innerHTML= '<i class="fa-solid fa-robot fa-bounce " style="color: cyan;"></i>'
         }
         currentPlayer = 0
         goesFirst.innerHTML = players[currentPlayer].name + ' goes First'
@@ -175,7 +175,7 @@ const Game = (()=>{
                 }
                 else if(currentPlayer===1){
                     playerTwoScore+=1
-                    player2Score.innerHTML = `${'<i class="fa-solid fa-robot"></i>&nbsp;' +players[currentPlayer].name} : ${playerTwoScore} `
+                    player2Score.innerHTML = '<i class="fa-solid fa-robot fa-bounce " style="color: cyan;"></i>' + `${playerTwoScore}`
                 }
                 gameOver = true;
             }
@@ -205,7 +205,9 @@ const Game = (()=>{
                 }
                 else if(currentPlayer===1){
                     playerTwoScore+=1
-                    player2Score.innerHTML = `${'<i class="fa-solid fa-robot"></i>&nbsp;' +players[currentPlayer].name} : ${playerTwoScore} `
+                    
+                    player2Score.innerHTML = `<i class="fa-solid fa-robot fa-bounce style=" color : red;"></i> : ${playerTwoScore} `
+                    
                 }
                 gameOver = true;
             }
@@ -270,7 +272,7 @@ const Game = (()=>{
                             }
                         }
                 }
-                console.log(Moves[BestMove])
+                
                 return Moves[BestMove]
                 
     } 
@@ -289,13 +291,13 @@ const Game = (()=>{
         if(value === '2'){
             cpu = true;
             cpuH = false;
-            player2.value = "EASY AI"
+            player2.value = `Easy AI;`
             Game.start()
         }
         else if(value === '3'){
             cpuH = true;
             cpu = false;
-            player2.value = "HARD AI"
+            player2.value = 'Ur Not Beating Me '
             Game.start()
         }
     }
@@ -358,7 +360,6 @@ const Game = (()=>{
         return false;
     }
 
-
     const checkForTie = (board)=>{
 
         if(board.every((cell) => cell !== '')) {
@@ -382,6 +383,8 @@ const Game = (()=>{
             setTimeout(function() {
                 winnerBanner.classList.add('fadeIn')
               }, 600);
+
+        
     }
     
 
@@ -411,15 +414,20 @@ playAgainButton.addEventListener('click',()=>{
 cpuBtn.addEventListener('click', ()=>{
 
     Game.cpuPlayer('2')
+    cpuBtn.classList.add('btnClick')
+    cpuHardBtn.classList.remove('btnClick')
     
 })
 
 cpuHardBtn.addEventListener('click', ()=>{
 
     Game.cpuPlayer('3')
-    
+    cpuHardBtn.classList.add('btnClick')
+    cpuBtn.classList.remove('btnClick')
     
 })
+
+
 
 
  
