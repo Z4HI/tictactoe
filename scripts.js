@@ -19,7 +19,7 @@ function render(){
    let boardHTML = ""
 
    gameboard.forEach((square,index)=>{
-    boardHTML+= `<div class="square" id = "${index}">${square}</div>`
+    boardHTML+= `<div class="square squareHover" id = "${index}">${square}</div>`
    })
     gameContainer.innerHTML = boardHTML; 
     const squares = document.querySelectorAll('.square')
@@ -85,7 +85,7 @@ const Game = (()=>{
         if(player1.value === ''||player2.value === ''){       
             return alert('please enter Name')
         }else{
-        players = [createPlayer(player1.value.toUpperCase(),"X"),createPlayer(player2.value.toUpperCase(),"0")]
+        players = [createPlayer(player1.value.toUpperCase(),"X"),createPlayer(player2.value.toUpperCase(),"O")]
         
         player1Score.innerHTML = '<i class="fa-solid fa-user"></i>&nbsp;' + players[0].name
         player2Score.innerHTML = '<i class="fa-solid fa-user"></i>&nbsp;' + players[1].name
@@ -118,7 +118,9 @@ const Game = (()=>{
             }
         
         Gameboard.update(index,players[currentPlayer].mark) 
-
+        let square = document.getElementById(`${index}`)
+        square.classList.add('selected')
+        
         ///-----------------------------------------------------//
         if(CheckForWin(Gameboard.getGameBoard())){
             gameOver = true;
@@ -144,19 +146,163 @@ const Game = (()=>{
             setTimeout(function() {
                 cpuMove()
               }, 300);
-            
+              
         }
         else if(cpuH){
             setTimeout(function() {
                 cpuHardMove()
               }, 300);
+              
         }
+
            
+    }
+                    ///////////////////////////// CPU EASY MOVE
+    const cpuMove = ()=>{
+        if(gameOver === false){
+            for(let i =0;i<Infinity;i++){
+                let randomNumb = Math.floor(Math.random()*9)
+                if(Gameboard.getGameBoard()[randomNumb] === ''){
+                    Gameboard.update(randomNumb, players[currentPlayer].mark)
+                    break;
+                }
+            }
+            if(CheckForWin(Gameboard.getGameBoard())){
+                displayWinner(players[currentPlayer].name)
+                if(currentPlayer===0){
+                    playerOneScore+=1
+                    player1Score.innerHTML = `${ players[currentPlayer].name} : ${playerOneScore} `
+                }
+                else if(currentPlayer===1){
+                    playerTwoScore+=1
+                    player2Score.innerHTML = `${'<i class="fa-solid fa-robot"></i>&nbsp;' +players[currentPlayer].name} : ${playerTwoScore} `
+                }
+                gameOver = true;
+            }
+            else if(checkForTie(Gameboard.getGameBoard())){
+                gameOver = true;
+            }else
+            gameOver = false
+            currentPlayer = currentPlayer === 0 ? 1 : 0;
+        } 
+    }   
+                    ////////////////////    CPU HARD MOCE
+    const cpuHardMove = ()=>{
+        
+        if(gameOver === false){
+
+           minimaxResult = minimax(Gameboard.getGameBoard(),players[1]).index
+           console.log(minimaxResult)
+           
+           Gameboard.update(minimaxResult,players[1].mark)
+           
+            
+           if(CheckForWin(Gameboard.getGameBoard())){
+                displayWinner(players[currentPlayer].name)
+                if(currentPlayer===0){
+                    playerOneScore+=1
+                    player1Score.innerHTML = `${ players[currentPlayer].name} : ${playerOneScore} `
+                }
+                else if(currentPlayer===1){
+                    playerTwoScore+=1
+                    player2Score.innerHTML = `${'<i class="fa-solid fa-robot"></i>&nbsp;' +players[currentPlayer].name} : ${playerTwoScore} `
+                }
+                gameOver = true;
+            }
+            else if(checkForTie(Gameboard.getGameBoard())){
+                gameOver = true;
+            }else
+            gameOver = false
+            currentPlayer = currentPlayer === 0 ? 1 : 0;
+        } 
+    } 
+                                //////Minimax
+        const minimax = (Board,currentPlayer) =>{ 
+            
+            let availSpots = emptyIndexes(Board)
+            
+            if(CheckForWin(Board) && currentPlayer === players[0]){
+                return {score:10}
+            }
+            else if(CheckForWin(Board) && currentPlayer === players[1]){
+                return {score:-10}
+            }
+            else if (availSpots.length === 0){
+                return {score:0}
+            }
+            
+            let Moves = []
+            for(let k = 0;k<availSpots.length;k++){
+                let move = {}
+                move.index = emptyIndexes(Board)[k]
+                let savedspace = Board[availSpots[k]]
+                Board[availSpots[k]] = currentPlayer.mark
+                if(currentPlayer === players[1] ){
+                    move.score = minimax(Board,players[0]).score
+                    
+                }
+                else if(currentPlayer === players[0]){
+                    move.score = minimax(Board,players[1]).score
+                    
+                }
+                Board[availSpots[k]] = savedspace
+                move.score = Math.sign(move.score) * (Math.abs(move.score)-1)
+                Moves.push(move)
+            }
+            
+            let BestMove;
+                if(currentPlayer === players[0]){    
+                    let bestscore = Infinity
+                        for(let j = 0;j < Moves.length;j++){
+                            if(Moves[j].score < bestscore){
+                                bestscore = Moves[j].score
+                                BestMove = j
+                                
+                            }
+                        }
+                }
+                else if(currentPlayer === players[1]){
+                    let bestscore = -Infinity
+                        for(let i = 0;i < Moves.length;i++){
+                            if(Moves[i].score > bestscore){
+                                bestscore = Moves[i].score
+                                BestMove = i 
+                            }
+                        }
+                }
+                console.log(Moves[BestMove])
+                return Moves[BestMove]
+                
+    } 
+    
+    function emptyIndexes(array){
+        let indexArray = []
+        for(i = 0;i<array.length;i++){
+            if(array[i] == ''){
+                indexArray.push(i)
+            }
+        }
+        return indexArray
+    }                                             ///Minimax
+
+    const cpuPlayer = (value)=>{
+        if(value === '2'){
+            cpu = true;
+            cpuH = false;
+            player2.value = "EASY AI"
+            Game.start()
+        }
+        else if(value === '3'){
+            cpuH = true;
+            cpu = false;
+            player2.value = "HARD AI"
+            Game.start()
+        }
     }
 
     const playAgain = ()=>{
         gameOver = false
-        if(cpu){
+        if(cpu || cpuH){
             currentPlayer = 0
         }
         goesFirst.innerHTML = players[currentPlayer].name + ' goes First'
@@ -196,10 +342,14 @@ const Game = (()=>{
                 setTimeout(function() {
                     square.style.backgroundColor = 'rgba(255, 15, 187, 0.428)'
                     square.style.textShadow = '0 0 5px #FFF, 0 0 1px #FFF'
+                    square.style.border = 'solid 3px white'
                     square2.style.backgroundColor = 'rgba(255, 15, 187, 0.428)'
                     square2.style.textShadow = '0 0 5px #FFF, 0 0 1px #FFF'
+                    square2.style.border = 'solid 3px white'
                     square3.style.backgroundColor = 'rgba(255, 15, 187, 0.428)'
                     square3.style.textShadow = '0 0 5px #FFF, 0 0 1px #FFF'
+                    square3.style.border = 'solid 3px white'
+                
                   }, 100);
                 
                 return true;
@@ -207,6 +357,7 @@ const Game = (()=>{
         }
         return false;
     }
+
 
     const checkForTie = (board)=>{
 
@@ -223,75 +374,6 @@ const Game = (()=>{
             return false;
     }
 
-    const cpuPlayer = (value)=>{
-        if(value === '2'){
-            cpu = true;
-            cpuH = false;
-            player2.value = "EASY AI"
-            Game.start()
-        }
-        else if(value === '3'){
-            cpuH = true;
-            cpu = false;
-        player2.value = "HARD AI"
-        Game.start()
-        }
-        
-        
-    }
-
-    const cpuMove = ()=>{
-        if(gameOver === false){
-            for(let i =0;i<Infinity;i++){
-                let randomNumb = Math.floor(Math.random()*9)
-                if(Gameboard.getGameBoard()[randomNumb] === ''){
-                    Gameboard.update(randomNumb, players[currentPlayer].mark)
-                    break;
-                }
-            }
-            if(CheckForWin(Gameboard.getGameBoard())){
-                displayWinner(players[currentPlayer].name)
-                if(currentPlayer===0){
-                    playerOneScore+=1
-                    player1Score.innerHTML = `${ players[currentPlayer].name} : ${playerOneScore} `
-                }
-                else if(currentPlayer===1){
-                    playerTwoScore+=1
-                    player2Score.innerHTML = `${'<i class="fa-solid fa-robot"></i>&nbsp;' +players[currentPlayer].name} : ${playerTwoScore} `
-                }
-                gameOver = true;
-            }
-            else if(checkForTie(Gameboard.getGameBoard())){
-                gameOver = true;
-            }else
-            gameOver = false
-            currentPlayer = currentPlayer === 0 ? 1 : 0;    
-        }
-    }   
-    
-    const cpuHardMove = ()=>{
-        if(gameOver === false){
-        ////minimax
-            if(CheckForWin(Gameboard.getGameBoard())){
-                displayWinner(players[currentPlayer].name)
-                if(currentPlayer===0){
-                    playerOneScore+=1
-                    player1Score.innerHTML = `${players[currentPlayer].name} : ${playerOneScore} `
-                }
-                else if(currentPlayer===1){
-                    playerTwoScore+=1
-                    player2Score.innerHTML = `${`<i class="fa-solid fa-robot fa-bounce " style="color: #efe7e6;"></i>&nbsp;` + players[currentPlayer].name} : ${playerTwoScore} `
-                }
-                gameOver = true;
-            }
-            else if(checkForTie(Gameboard.getGameBoard())){
-                gameOver = true;
-            }else
-            gameOver = false
-            currentPlayer = currentPlayer === 0 ? 1 : 0;    
-        }
-    } 
-
     const displayWinner = (winnerName)=>{
         let winnerBanner = document.createElement('div')
             document.querySelector('.wrapper').appendChild(winnerBanner)
@@ -301,18 +383,21 @@ const Game = (()=>{
                 winnerBanner.classList.add('fadeIn')
               }, 600);
     }
+    
 
     return {
-        start,handleClick,playAgain,cpuPlayer
+        start,handleClick,playAgain,cpuPlayer,emptyIndexes,minimax
         
     }
 })();
 
 
 startButton.addEventListener('click',() =>{
-    if(cpu){
+    if(cpu || cpuH){
         player2.value = ''
         cpu = false
+        cpuH = false
+        player2Score.innerHTML = ''
     }
     Game.start()
     
